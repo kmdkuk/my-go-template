@@ -1,0 +1,36 @@
+name: Push a tag after merging release/vX.Y.Z branch
+
+on:
+  # When this workflow is enabled, it will automatically push a v0.1.0 tag when a PR is merged from a branch such as release/v0.1.0.
+  # If you want to run a release workflow in response to a tag push, prepare your own PAT and register secrets as GH_PAT in your repository.
+  # Using secrets.GITHUB_TOKEN will cause the push to be ignored by the release workflow.
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - main
+
+jobs:
+  tag:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Extract version
+        id: extract_version
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Push Tag
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.extract_version.outputs.VERSION }}
+          git push origin ${{ steps.extract_version.outputs.VERSION }}
