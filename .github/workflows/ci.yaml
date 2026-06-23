@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - uses: aquaproj/aqua-installer@v4.0.4
+      - uses: aquaproj/aqua-installer@v4.0.5
         with:
           aqua_version: v2.60.1
           aqua_opts: ""
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: aquaproj/aqua-installer@v4.0.4
+      - uses: aquaproj/aqua-installer@v4.0.5
         with:
           aqua_version: v2.60.1
           aqua_opts: ""
